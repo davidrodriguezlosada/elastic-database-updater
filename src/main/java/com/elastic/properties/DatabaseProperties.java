@@ -7,7 +7,7 @@ package com.elastic.properties;
  * <li>Database user</li>
  * <li>Database password</li>
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class DatabaseProperties {
 

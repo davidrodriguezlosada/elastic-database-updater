@@ -4,7 +4,7 @@ package com.elastic.exceptions;
  * This exception is used when two file dates are checked and they have been
  * created in different dates
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class DifferentDaysException extends RuntimeException {
 

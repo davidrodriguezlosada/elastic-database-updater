@@ -8,7 +8,7 @@ import java.util.Properties;
  * This class will load and store all properties configured on the file
  * <i>config.properties</i>
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class ContinuousDeliveryProperties {
 
@@ -19,6 +19,10 @@ public class ContinuousDeliveryProperties {
 		ContinuousDeliveryProperties.class.getClassLoader().getResourceAsStream("config.properties"));
 	this.properties = new Properties();
 	this.properties.load(inputStream);
+    }
+
+    public String getPipeline() {
+	return properties.getProperty("pipeline");
     }
 
     public String getServiceName() {

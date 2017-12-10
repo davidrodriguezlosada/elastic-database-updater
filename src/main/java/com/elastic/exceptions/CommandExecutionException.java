@@ -4,7 +4,7 @@ package com.elastic.exceptions;
  * Exception thrown when a shell command returned an error code. This class
  * stores the problematic command and
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class CommandExecutionException extends Exception {
 
