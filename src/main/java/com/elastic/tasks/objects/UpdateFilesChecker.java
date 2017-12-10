@@ -1,4 +1,4 @@
-package com.elastic.tasks;
+package com.elastic.tasks.objects;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import com.elastic.properties.ContinuousDeliveryProperties;
 /**
  * This class will check if the files involved in the process are correct
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class UpdateFilesChecker {
 

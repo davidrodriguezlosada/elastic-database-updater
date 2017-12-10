@@ -1,4 +1,4 @@
-package com.elastic.tasks;
+package com.elastic.tasks.objects;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +23,7 @@ import com.elastic.utils.FileUtils;
 /**
  * This class provides methods to administer a SQLServer database.
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class Database {
 

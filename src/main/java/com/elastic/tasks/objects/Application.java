@@ -1,5 +1,6 @@
-package com.elastic.tasks;
+package com.elastic.tasks.objects;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,7 +13,7 @@ import com.elastic.utils.ZipUtils;
  * This class represents a Tomcat application and provides different methods to
  * manage it.
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class Application {
 
@@ -40,7 +41,11 @@ public class Application {
 	String currentDate = dateFormatter.format(new Date());
 	String target = backupsPath + applicationName + "_" + currentDate + ".zip";
 
-	ZipUtils.createZip(source, target);
+	ZipUtils appZip = new ZipUtils();
+	appZip.generateFileList(new File(source));
+	appZip.zipIt(target);
+
+	// ZipUtils.createZip(source, target);
     }
 
     /**
@@ -57,7 +62,7 @@ public class Application {
      * @throws IOException
      */
     public void deploy(String warPath) throws IOException {
-	ZipUtils.unzip(warPath + applicationName, getApplicationPath());
+	// ZipUtils.unzip(warPath + applicationName, getApplicationPath());
     }
 
     /**

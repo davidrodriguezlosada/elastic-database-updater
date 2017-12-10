@@ -1,4 +1,4 @@
-package com.elastic.tasks;
+package com.elastic.tasks.objects;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import com.elastic.utils.CommandLineUtils;
 /**
  * This class provides methods to administer a Windows Service
  * 
- * @author David
+ * @author David Rodriguez Losada
  */
 public class Service {
 
