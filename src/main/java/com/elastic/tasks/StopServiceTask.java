@@ -3,34 +3,37 @@ package com.elastic.tasks;
 import java.io.IOException;
 
 import com.elastic.exceptions.CommandExecutionException;
+import com.elastic.exceptions.TaskExecutionException;
 import com.elastic.properties.ContinuousDeliveryProperties;
 import com.elastic.tasks.objects.Service;
 
-public class StopServiceTask extends AbstractTask implements IRollbackable {
+public class StopServiceTask extends AbstractTask implements IRollbackableTask {
 
     Service service;
 
     public StopServiceTask(ContinuousDeliveryProperties properties) {
 	super(properties);
 
-	service = new Service(properties.getServiceName());
+	this.service = new Service(properties.getServiceName());
     }
 
     @Override
-    public void execute() {
+    public void execute() throws TaskExecutionException {
 	try {
-	    service.stop();
+	    this.service.stop();
 	} catch (IOException | InterruptedException | CommandExecutionException e) {
-	    getLogger().error(e.getMessage(), e);
+	    AbstractTask.getLogger().error(e.getMessage(), e);
+
+	    throw new TaskExecutionException(this);
 	}
     }
 
     @Override
     public void rollback() {
 	try {
-	    service.start();
+	    this.service.start();
 	} catch (IOException | InterruptedException | CommandExecutionException e) {
-	    getLogger().error(e.getMessage(), e);
+	    AbstractTask.getLogger().error(e.getMessage(), e);
 	}
     }
 }

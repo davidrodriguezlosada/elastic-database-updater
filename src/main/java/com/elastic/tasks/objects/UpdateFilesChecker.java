@@ -19,7 +19,7 @@ import com.elastic.properties.ContinuousDeliveryProperties;
 
 /**
  * This class will check if the files involved in the process are correct
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class UpdateFilesChecker {
@@ -29,24 +29,24 @@ public class UpdateFilesChecker {
     /**
      * Checks if war and script files exists and have been created on the same
      * date
-     * 
+     *
      * @param properties
      * @throws IOException
      */
     public static void check(ContinuousDeliveryProperties properties) throws IOException, DifferentDaysException {
 
-	logger.info("Checking update files");
+	UpdateFilesChecker.logger.info("Checking update files");
 
-	checkExistsWar(properties);
+	UpdateFilesChecker.checkExistsWar(properties);
 
-	checkFilesDates(properties);
+	UpdateFilesChecker.checkFilesDates(properties);
 
-	logger.info("Update files succesfully checked");
+	UpdateFilesChecker.logger.info("Update files succesfully checked");
     }
 
     /**
      * Returns the path of the war file
-     * 
+     *
      * @param properties
      * @return
      */
@@ -56,7 +56,7 @@ public class UpdateFilesChecker {
 
     /**
      * Returns the path of the SQL script files
-     * 
+     *
      * @param properties
      * @return
      */
@@ -66,13 +66,13 @@ public class UpdateFilesChecker {
 
     /**
      * Checks if war file exists
-     * 
+     *
      * @param properties
      * @throws FileNotFoundException
      *             if war file doesn't exist
      */
     private static void checkExistsWar(ContinuousDeliveryProperties properties) throws FileNotFoundException {
-	Path warPath = getWarPath(properties);
+	Path warPath = UpdateFilesChecker.getWarPath(properties);
 
 	if (!Files.exists(warPath)) {
 	    throw new FileNotFoundException("Couldn't find war file " + properties.getWarPath());
@@ -81,7 +81,7 @@ public class UpdateFilesChecker {
 
     /**
      * Check if war file and all script files have the same day
-     * 
+     *
      * @param properties
      * @throws IOException
      * @throws DifferentDaysException
@@ -91,18 +91,19 @@ public class UpdateFilesChecker {
     private static void checkFilesDates(ContinuousDeliveryProperties properties)
 	    throws IOException, DifferentDaysException {
 
-	Path warPath = getWarPath(properties);
+	Path warPath = UpdateFilesChecker.getWarPath(properties);
 
-	LocalDate warCreationDate = getCreationDate(warPath);
+	LocalDate warCreationDate = UpdateFilesChecker.getCreationDate(warPath);
 
-	try (DirectoryStream<Path> paths = Files.newDirectoryStream(getScriptsPath(properties), "*.sql")) {
+	try (DirectoryStream<Path> paths = Files.newDirectoryStream(UpdateFilesChecker.getScriptsPath(properties),
+		"*.sql")) {
 
 	    paths.forEach(filePath -> {
 		if (Files.isRegularFile(filePath)) {
 		    try {
-			LocalDate scriptCreationDate = getCreationDate(filePath);
+			LocalDate scriptCreationDate = UpdateFilesChecker.getCreationDate(filePath);
 
-			if (!isSameDay(scriptCreationDate, warCreationDate)) {
+			if (!UpdateFilesChecker.isSameDay(scriptCreationDate, warCreationDate)) {
 			    throw new DifferentDaysException(filePath.toString(), warPath.toString());
 			}
 		    } catch (IOException e) {
@@ -115,7 +116,7 @@ public class UpdateFilesChecker {
 
     /**
      * Returns the creation date of indicated file
-     * 
+     *
      * @param file
      * @return
      * @throws IOException
@@ -126,20 +127,20 @@ public class UpdateFilesChecker {
 
 	LocalDate warCreationDate = new Date(warCreationTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-	logger.debug("Loaded file creation date. File {}. Year: {}. Day of year: {}", file.getFileName(),
-		warCreationDate.getYear(), warCreationDate.getDayOfYear());
+	UpdateFilesChecker.logger.debug("Loaded file creation date. File {}. Year: {}. Day of year: {}",
+		file.getFileName(), warCreationDate.getYear(), warCreationDate.getDayOfYear());
 
 	return warCreationDate;
     }
 
     /**
      * Returns true if both dates have the same day
-     * 
+     *
      * @param dateA
      * @param dateB
      * @return
      */
     private static boolean isSameDay(LocalDate dateA, LocalDate dateB) {
-	return dateA.getYear() == dateB.getYear() && dateA.getDayOfYear() == dateB.getDayOfYear();
+	return (dateA.getYear() == dateB.getYear()) && (dateA.getDayOfYear() == dateB.getDayOfYear());
     }
 }

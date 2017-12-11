@@ -6,15 +6,15 @@ package com.elastic.properties;
  * <li>Database name</li>
  * <li>Database user</li>
  * <li>Database password</li>
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class DatabaseProperties {
 
-    private String url;
-    private String name;
-    private String user;
-    private String password;
+    private final String url;
+    private final String name;
+    private final String user;
+    private final String password;
 
     public DatabaseProperties(String url, String name, String user, String password) {
 	this.url = url;
@@ -24,18 +24,18 @@ public class DatabaseProperties {
     }
 
     public String getUrl() {
-	return url;
+	return this.url;
     }
 
     public String getName() {
-	return name;
+	return this.name;
     }
 
     public String getUser() {
-	return user;
+	return this.user;
     }
 
     public String getPassword() {
-	return password;
+	return this.password;
     }
 }

@@ -22,7 +22,7 @@ import com.elastic.utils.FileUtils;
 
 /**
  * This class provides methods to administer a SQLServer database.
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class Database {
@@ -37,7 +37,7 @@ public class Database {
 
     private static final String RESTORATION_FILE_BACKUP_PATH_TAG = "%BACKUP_PATH%";
 
-    private DatabaseProperties databaseProperties;
+    private final DatabaseProperties databaseProperties;
 
     public Database(DatabaseProperties databaseProperties) {
 	this.databaseProperties = databaseProperties;
@@ -46,7 +46,7 @@ public class Database {
     /**
      * Backups current database to indicated folder. This method will generate
      * the file name as the concatenation of database's name plus actual date.
-     * 
+     *
      * @param backupFolder
      * @return The full path of the resulting file
      * @throws IOException
@@ -56,22 +56,22 @@ public class Database {
     public String backupDatabase(String backupFolder)
 	    throws IOException, InterruptedException, CommandExecutionException {
 
-	String backupFileName = getBackupFileName();
+	String backupFileName = this.getBackupFileName();
 
-	return backupDatabase(backupFolder, backupFileName);
+	return this.backupDatabase(backupFolder, backupFileName);
     }
 
     private String getBackupFileName() {
-	SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+	SimpleDateFormat dateFormatter = new SimpleDateFormat(Database.DATE_FORMAT);
 	String currentDate = dateFormatter.format(new Date());
 
-	String backupFileName = databaseProperties.getName() + "_" + currentDate + ".bak";
+	String backupFileName = this.databaseProperties.getName() + "_" + currentDate + ".bak";
 	return backupFileName;
     }
 
     /**
      * Backups current database to indicated folder and file name
-     * 
+     *
      * @param backupFolder
      * @param backupFileName
      * @return The full path of the resulting file
@@ -82,23 +82,23 @@ public class Database {
     public String backupDatabase(String backupFolder, String backupFileName)
 	    throws IOException, InterruptedException, CommandExecutionException {
 
-	logger.info("Backup database {}", databaseProperties.getName());
+	Database.logger.info("Backup database {}", this.databaseProperties.getName());
 
 	String fullBackupPath = backupFolder + backupFileName;
 
-	String command = getCommandLineExpressionForQuery(
-		"BACKUP DATABASE " + databaseProperties.getName() + " TO DISK='" + fullBackupPath + "'");
+	String command = this.getCommandLineExpressionForQuery(
+		"BACKUP DATABASE " + this.databaseProperties.getName() + " TO DISK='" + fullBackupPath + "'");
 
 	CommandLineUtils.executeCommand(command);
 
-	logger.info("Database {} succesfully backup", databaseProperties.getName());
+	Database.logger.info("Database {} succesfully backup", this.databaseProperties.getName());
 
 	return fullBackupPath;
     }
 
     /**
      * Restores this database with indicated file
-     * 
+     *
      * @param backupFile
      * @throws InterruptedException
      * @throws IOException
@@ -108,25 +108,25 @@ public class Database {
     public void restoreDatabase(String backupFile)
 	    throws IOException, InterruptedException, CommandExecutionException, URISyntaxException {
 
-	logger.info("Restoring database {}", databaseProperties.getName());
+	Database.logger.info("Restoring database {}", this.databaseProperties.getName());
 
-	File tempFile = getRestorationScriptFile(backupFile);
+	File tempFile = this.getRestorationScriptFile(backupFile);
 
-	String command = getCommandLineExpressionForFile(tempFile.getAbsolutePath());
+	String command = this.getCommandLineExpressionForFile(tempFile.getAbsolutePath());
 
 	CommandLineUtils.executeCommand(command);
 
-	logger.info("Database {} succesfully restored", databaseProperties.getName());
+	Database.logger.info("Database {} succesfully restored", this.databaseProperties.getName());
     }
 
     private File getRestorationScriptFile(String backupFile) throws IOException, FileNotFoundException {
-	String restorationScript = new FileUtils().getFileContents(RESTORATION_FILE);
+	String restorationScript = new FileUtils().getFileContents(Database.RESTORATION_FILE);
 
 	restorationScript = restorationScript
-		.replaceAll(RESTORATION_FILE_DATABASE_NAME_TAG, "'" + databaseProperties.getName() + "'")
-		.replaceAll(RESTORATION_FILE_BACKUP_PATH_TAG, "'" + backupFile.replace("\\", "\\\\") + "'");
+		.replaceAll(Database.RESTORATION_FILE_DATABASE_NAME_TAG, "'" + this.databaseProperties.getName() + "'")
+		.replaceAll(Database.RESTORATION_FILE_BACKUP_PATH_TAG, "'" + backupFile.replace("\\", "\\\\") + "'");
 
-	File tempFile = File.createTempFile(RESTORATION_FILE, ".sql");
+	File tempFile = File.createTempFile(Database.RESTORATION_FILE, ".sql");
 
 	try (PrintWriter out = new PrintWriter(tempFile)) {
 	    out.println(restorationScript);
@@ -136,7 +136,7 @@ public class Database {
 
     /**
      * Execute all SQL script files in indicated path over current database
-     * 
+     *
      * @param path
      * @throws IOException
      */
@@ -145,14 +145,14 @@ public class Database {
 	    paths.forEach(filePath -> {
 		if (Files.isRegularFile(filePath)) {
 		    try {
-			logger.info("Executing script {} on database {}", filePath.toString(),
-				databaseProperties.getName());
+			Database.logger.info("Executing script {} on database {}", filePath.toString(),
+				this.databaseProperties.getName());
 
 			CommandLineUtils
-				.executeCommand(getCommandLineExpressionForFileWithDatabase(filePath.toString()));
+				.executeCommand(this.getCommandLineExpressionForFileWithDatabase(filePath.toString()));
 
-			logger.info("Script {} succesfully executed on database {}", filePath.toString(),
-				databaseProperties.getName());
+			Database.logger.info("Script {} succesfully executed on database {}", filePath.toString(),
+				this.databaseProperties.getName());
 		    } catch (IOException | InterruptedException | CommandExecutionException e) {
 			throw new RuntimeException(e);
 		    }
@@ -164,36 +164,37 @@ public class Database {
     /**
      * This method will return the command line sentence needed to execute
      * indicated query in current database.
-     * 
+     *
      * @param sqlQuery
      * @return
      */
     private String getCommandLineExpressionForQuery(String sqlQuery) {
-	return "SQLCMD -S " + databaseProperties.getUrl() + " -U " + databaseProperties.getUser() + " -P "
-		+ databaseProperties.getPassword() + " -Q \"" + sqlQuery + "\"";
+	return "SQLCMD -S " + this.databaseProperties.getUrl() + " -U " + this.databaseProperties.getUser() + " -P "
+		+ this.databaseProperties.getPassword() + " -Q \"" + sqlQuery + "\"";
     }
 
     /**
      * This method will return the command line sentence needed to execute
      * indicated script file in current database.
-     * 
+     *
      * @param scriptFilePath
      * @return
      */
     private String getCommandLineExpressionForFile(String scriptFilePath) {
-	return "SQLCMD -S " + databaseProperties.getUrl() + " -U " + databaseProperties.getUser() + " -P "
-		+ databaseProperties.getPassword() + " -i " + scriptFilePath;
+	return "SQLCMD -S " + this.databaseProperties.getUrl() + " -U " + this.databaseProperties.getUser() + " -P "
+		+ this.databaseProperties.getPassword() + " -i " + scriptFilePath;
     }
 
     /**
      * This method will return the command line sentence needed to execute
      * indicated script file in current database.
-     * 
+     *
      * @param scriptFilePath
      * @return
      */
     private String getCommandLineExpressionForFileWithDatabase(String scriptFilePath) {
-	return "SQLCMD -S " + databaseProperties.getUrl() + " -U " + databaseProperties.getUser() + " -P "
-		+ databaseProperties.getPassword() + " -d " + databaseProperties.getName() + " -i " + scriptFilePath;
+	return "SQLCMD -S " + this.databaseProperties.getUrl() + " -U " + this.databaseProperties.getUser() + " -P "
+		+ this.databaseProperties.getPassword() + " -d " + this.databaseProperties.getName() + " -i "
+		+ scriptFilePath;
     }
 }

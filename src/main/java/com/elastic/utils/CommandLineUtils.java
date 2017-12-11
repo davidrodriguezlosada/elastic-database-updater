@@ -16,7 +16,7 @@ public class CommandLineUtils {
     /**
      * Executes indicated command into shell.<br>
      * Both errors and info messages will be logged.
-     * 
+     *
      * @param command
      * @throws IOException
      * @throws InterruptedException
@@ -28,7 +28,7 @@ public class CommandLineUtils {
 	StringBuffer errorResponse = new StringBuffer();
 	String line;
 
-	logger.debug("Executing command: {}", command);
+	CommandLineUtils.logger.debug("Executing command: {}", command);
 
 	Process p = Runtime.getRuntime().exec(command);
 	p.waitFor();
@@ -38,12 +38,12 @@ public class CommandLineUtils {
 
 	while ((line = reader.readLine()) != null) {
 	    correctResponse.append(line + "\n");
-	    logger.debug(line);
+	    CommandLineUtils.logger.debug(line);
 	}
 
 	while ((line = error.readLine()) != null) {
 	    errorResponse.append(line + "\n");
-	    logger.error(line);
+	    CommandLineUtils.logger.error(line);
 	}
 
 	if (errorResponse.length() != 0) {

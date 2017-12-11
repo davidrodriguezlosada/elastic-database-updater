@@ -2,6 +2,7 @@ package com.elastic.tasks;
 
 import java.io.IOException;
 
+import com.elastic.exceptions.TaskExecutionException;
 import com.elastic.properties.ContinuousDeliveryProperties;
 import com.elastic.properties.DatabaseProperties;
 import com.elastic.tasks.objects.Database;
@@ -13,15 +14,17 @@ public abstract class AbstractExecuteScriptsTask extends AbstractTask {
     public AbstractExecuteScriptsTask(ContinuousDeliveryProperties properties, DatabaseProperties databaseProperties) {
 	super(properties);
 
-	database = new Database(databaseProperties);
+	this.database = new Database(databaseProperties);
     }
 
     @Override
-    public void execute() {
+    public void execute() throws TaskExecutionException {
 	try {
-	    database.executeScripts(properties.getDatabaseUpdateScriptsPath());
+	    this.database.executeScripts(this.properties.getDatabaseUpdateScriptsPath());
 	} catch (IOException e) {
-	    getLogger().error(e.getMessage(), e);
+	    AbstractTask.getLogger().error(e.getMessage(), e);
+
+	    throw new TaskExecutionException(this);
 	}
     }
 }

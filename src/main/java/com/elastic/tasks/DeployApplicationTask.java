@@ -2,25 +2,29 @@ package com.elastic.tasks;
 
 import java.io.IOException;
 
+import com.elastic.exceptions.TaskExecutionException;
 import com.elastic.properties.ContinuousDeliveryProperties;
 import com.elastic.tasks.objects.Application;
 
-public class DeployApplicationTask extends AbstractTask implements IRollbackable {
+public class DeployApplicationTask extends AbstractTask implements IRollbackableTask {
 
     public DeployApplicationTask(ContinuousDeliveryProperties properties) {
 	super(properties);
     }
 
     @Override
-    public void execute() {
+    public void execute() throws TaskExecutionException {
 
 	try {
-	    Application testApplication = new Application(properties.getTomcatAppName(), properties.getTomcatPath());
-	    testApplication.backup(properties.getBackupsPath());
+	    Application testApplication = new Application(this.properties.getTomcatAppName(),
+		    this.properties.getTomcatPath());
+	    testApplication.backup(this.properties.getBackupsPath());
 	    testApplication.remove();
-	    testApplication.deploy(properties.getWarPath());
+	    testApplication.deploy(this.properties.getWarPath());
 	} catch (IOException e) {
-	    getLogger().error(e.getMessage(), e);
+	    AbstractTask.getLogger().error(e.getMessage(), e);
+
+	    throw new TaskExecutionException(this);
 	}
     }
 

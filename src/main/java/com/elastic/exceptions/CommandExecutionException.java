@@ -3,7 +3,7 @@ package com.elastic.exceptions;
 /**
  * Exception thrown when a shell command returned an error code. This class
  * stores the problematic command and
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class CommandExecutionException extends Exception {
@@ -11,8 +11,8 @@ public class CommandExecutionException extends Exception {
     /***/
     private static final long serialVersionUID = 1L;
 
-    private String command;
-    private StringBuffer error;
+    private final String command;
+    private final StringBuffer error;
 
     public CommandExecutionException(String command, StringBuffer error) {
 	this.command = command;
@@ -23,13 +23,13 @@ public class CommandExecutionException extends Exception {
      * @return The executed command
      */
     public String getCommand() {
-	return command;
+	return this.command;
     }
 
     /**
      * @return The console error generated. It can have multiple lines
      */
     public StringBuffer getError() {
-	return error;
+	return this.error;
     }
 }

@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
 	Pipeline pipeline;
 
-	logger.info("INIT MAIN PROCESS");
+	Main.logger.info("INIT MAIN PROCESS");
 
 	try {
 	    ContinuousDeliveryProperties properties = new ContinuousDeliveryProperties();
@@ -29,10 +29,10 @@ public class Main {
 
 	    pipeline.run();
 
-	    logger.info("MAIN PROCESS SUCCESFULY FINISHED");
+	    Main.logger.info("MAIN PROCESS SUCCESFULY FINISHED");
 
 	} catch (UnknownTaskException | IOException | DifferentDaysException e) {
-	    logger.error(e.getMessage(), e);
+	    Main.logger.error(e.getMessage(), e);
 
 	    // TODO: Send mail :
 	    // http://stackoverflow.com/questions/3649014/send-email-using-java

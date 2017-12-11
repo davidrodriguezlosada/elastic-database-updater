@@ -12,15 +12,15 @@ import com.elastic.utils.ZipUtils;
 /**
  * This class represents a Tomcat application and provides different methods to
  * manage it.
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class Application {
 
     private static final String DATE_FORMAT = "yyyyMMdd_hhmm";
 
-    private String applicationName;
-    private String tomcatPath;
+    private final String applicationName;
+    private final String tomcatPath;
 
     public Application(String applicationName, String tomcatPath) {
 	this.applicationName = applicationName;
@@ -29,17 +29,17 @@ public class Application {
 
     /**
      * Copy the application to indicated path and
-     * 
+     *
      * @param backupsPath
      * @throws IOException
      */
     public void backup(String backupsPath) throws IOException {
 
-	String source = getApplicationPath();
+	String source = this.getApplicationPath();
 
-	SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+	SimpleDateFormat dateFormatter = new SimpleDateFormat(Application.DATE_FORMAT);
 	String currentDate = dateFormatter.format(new Date());
-	String target = backupsPath + applicationName + "_" + currentDate + ".zip";
+	String target = backupsPath + this.applicationName + "_" + currentDate + ".zip";
 
 	ZipUtils appZip = new ZipUtils();
 	appZip.generateFileList(new File(source));
@@ -52,12 +52,12 @@ public class Application {
      * @throws IOException
      */
     public void remove() throws IOException {
-	Files.delete(Paths.get(getApplicationPath()));
+	Files.delete(Paths.get(this.getApplicationPath()));
     }
 
     /**
      * Extracts the war to tomcat's directory
-     * 
+     *
      * @param warPath
      * @throws IOException
      */
@@ -67,10 +67,10 @@ public class Application {
 
     /**
      * Returns the full path of the Tomcat application
-     * 
+     *
      * @return
      */
     private String getApplicationPath() {
-	return tomcatPath + "\\webapps\\" + applicationName;
+	return this.tomcatPath + "\\webapps\\" + this.applicationName;
     }
 }

@@ -10,14 +10,14 @@ import com.elastic.utils.CommandLineUtils;
 
 /**
  * This class provides methods to administer a Windows Service
- * 
+ *
  * @author David Rodriguez Losada
  */
 public class Service {
 
     private static Logger logger = LoggerFactory.getLogger(Service.class);
 
-    private String serviceName;
+    private final String serviceName;
 
     public Service(String serviceName) {
 	this.serviceName = serviceName;
@@ -25,37 +25,37 @@ public class Service {
 
     /**
      * Starts the service
-     * 
+     *
      * @throws IOException
      * @throws InterruptedException
      * @throws CommandExecutionException
      */
     public void start() throws IOException, InterruptedException, CommandExecutionException {
 
-	logger.info("Starting service {}", serviceName);
+	Service.logger.info("Starting service {}", this.serviceName);
 
-	CommandLineUtils.executeCommand("net start " + serviceName);
+	CommandLineUtils.executeCommand("net start " + this.serviceName);
 
-	logger.info("Service {} succesfully started", serviceName);
+	Service.logger.info("Service {} succesfully started", this.serviceName);
     }
 
     /**
      * Stops the service
-     * 
+     *
      * @throws IOException
      * @throws InterruptedException
      * @throws CommandExecutionException
      */
     public void stop() throws IOException, InterruptedException, CommandExecutionException {
 
-	logger.info("Stopping service {}", serviceName);
+	Service.logger.info("Stopping service {}", this.serviceName);
 	try {
-	    CommandLineUtils.executeCommand("net stop " + serviceName);
+	    CommandLineUtils.executeCommand("net stop " + this.serviceName);
 
-	    logger.info("Service {} succesfully stoped", serviceName);
+	    Service.logger.info("Service {} succesfully stoped", this.serviceName);
 	} catch (CommandExecutionException ex) {
 	    if (ex.getError().toString().contains("3521")) {
-		logger.info("Service {} already stoped", serviceName);
+		Service.logger.info("Service {} already stoped", this.serviceName);
 	    } else {
 		throw ex;
 	    }

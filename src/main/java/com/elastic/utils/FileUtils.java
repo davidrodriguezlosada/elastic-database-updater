@@ -8,12 +8,12 @@ public class FileUtils {
 
     /**
      * Returns file contents of a file stored in the project folder
-     * 
+     *
      * @param fileName
      * @return
      */
     public String getFileContents(String fileName) {
-	return new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(fileName)))
+	return new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(fileName)))
 		.lines().collect(Collectors.joining("\n"));
     }
 }

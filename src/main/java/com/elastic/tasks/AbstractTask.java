@@ -3,6 +3,7 @@ package com.elastic.tasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elastic.exceptions.TaskExecutionException;
 import com.elastic.properties.ContinuousDeliveryProperties;
 
 public abstract class AbstractTask {
@@ -16,8 +17,8 @@ public abstract class AbstractTask {
     }
 
     public static Logger getLogger() {
-	return logger;
+	return AbstractTask.logger;
     }
 
-    public abstract void execute();
+    public abstract void execute() throws TaskExecutionException;
 }
